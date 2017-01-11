@@ -1,7 +1,10 @@
 //bring in the gulp library and assign it to this variable
+//don't need libraries here (jquery and mustache)
 var gulp = require('gulp'),
 	gutil = require('gulp-util'),
 	coffee = require('gulp-coffee'),
+	browserify = require('gulp-browserify'),
+	compass = require('gulp-compass'),
 	concat = require('gulp-concat');
 
 var coffeeSources = ['components/coffee/tagline.coffee'];
@@ -12,6 +15,8 @@ var jsSources = [
 	'components/scripts/tagline.js',
 	'components/scripts/template.js'
 	];
+//only need this one sheet because this sass document imports all the other stylesheets
+var sassSources = ['components/sass/style.scss'];
 
 //gulp task log example
 //gulp.task('log', function() {
@@ -40,6 +45,20 @@ gulp.task('js', function() {
 	gulp.src(jsSources)
 		//What we want the concatinated file named as.. has to match what is in HTML
 		.pipe(concat('script.js'))
-	//where we want the concatanated file to appear.. has to match what is in HTML
-	.pipe(gulp.dest('builds/development/js'));
+		//adding another pipe command to send through browserify plugin
+		.pipe(browserify())
+		//where we want the concatanated file to appear.. has to match what is in HTML
+		.pipe(gulp.dest('builds/development/js'));
+});
+
+
+gulp.task('compass', function() {
+	gulp.src(sassSources)
+		.pipe(compass({
+			sass: 'components/sass',
+			images: 'builds/development/images',
+			style: 'expanded'
+		}))
+		.on('error', gutil.log)
+		.pipe(gulp.dest('builds/development/css'));
 });
