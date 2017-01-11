@@ -41,6 +41,8 @@ gulp.task('coffee', function() {
 		.pipe(gulp.dest('components/scripts'));
 });
 
+// FOR BELOW: would run the compass task before the js task
+//gulp.task('js', ['compass'], function() {
 gulp.task('js', function() {
 	gulp.src(jsSources)
 		//What we want the concatinated file named as.. has to match what is in HTML
@@ -62,3 +64,6 @@ gulp.task('compass', function() {
 		.on('error', gutil.log)
 		.pipe(gulp.dest('builds/development/css'));
 });
+
+// if you name this default instead of all then you can just run gulp with no suffix in the terminal 
+gulp.task('all', ['coffee', 'js', 'compass']);
