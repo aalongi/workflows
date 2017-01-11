@@ -70,7 +70,9 @@ var pixgrid = function() {
         }, !1);
     }
 }();
-var fill;
+var $, fill;
+
+$ = require('jquery');
 
 (fill = function(item) {
   return $('.tagline').append("" + item);
@@ -80,6 +82,7 @@ fill;
 
 $(function() {
   var Mustache = require('mustache');
+  //already required jquery in coffeescript file, so don't need to do it again.
  
   $.getJSON('js/data.json', function(data) {
     var template = $('#speakerstpl').html();
