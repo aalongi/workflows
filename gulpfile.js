@@ -1,9 +1,17 @@
 //bring in the gulp library and assign it to this variable
 var gulp = require('gulp'),
 	gutil = require('gulp-util'),
-	coffee = require('gulp-coffee');
+	coffee = require('gulp-coffee'),
+	concat = require('gulp-concat');
 
 var coffeeSources = ['components/coffee/tagline.coffee'];
+//creating a single variable from all the javascript files
+var jsSources = [
+	'components/scripts/rclick.js',
+	'components/scripts/pixgrid.js',
+	'components/scripts/tagline.js',
+	'components/scripts/template.js'
+	];
 
 //gulp task log example
 //gulp.task('log', function() {
@@ -26,4 +34,12 @@ gulp.task('coffee', function() {
 		//taking results of coffee command and piping it somewhere else..
 		//will name whatever the old file was named but just with .js extension
 		.pipe(gulp.dest('components/scripts'));
+});
+
+gulp.task('js', function() {
+	gulp.src(jsSources)
+		//What we want the concatinated file named as.. has to match what is in HTML
+		.pipe(concat('script.js'))
+	//where we want the concatanated file to appear.. has to match what is in HTML
+	.pipe(gulp.dest('builds/development/js'));
 });
