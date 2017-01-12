@@ -5,6 +5,7 @@ var gulp = require('gulp'),
 	coffee = require('gulp-coffee'),
 	browserify = require('gulp-browserify'),
 	compass = require('gulp-compass'),
+	connect = require('gulp-connect'),
 	concat = require('gulp-concat');
 
 var coffeeSources = ['components/coffee/tagline.coffee'];
@@ -23,7 +24,7 @@ var sassSources = ['components/sass/style.scss'];
 	//gutil.log('workflows are awesome');
 //});
 
-
+//**DOESN'T MATTER WHAT ORDER THESE TASKS ARE IN
 
 gulp.task('coffee', function() {
 	//original location of what I want to process
@@ -39,6 +40,7 @@ gulp.task('coffee', function() {
 		//taking results of coffee command and piping it somewhere else..
 		//will name whatever the old file was named but just with .js extension
 		.pipe(gulp.dest('components/scripts'));
+		//don't need the reload here because it is at the end of js task.. and js task automatically accounts for coffee anyway
 });
 
 // **example** FOR BELOW: would run the compass task before the js task
@@ -51,7 +53,9 @@ gulp.task('js', function() {
 		//adding another pipe command to send through browserify plugin
 		.pipe(browserify())
 		//where we want the concatanated file to appear.. has to match what is in HTML
-		.pipe(gulp.dest('builds/development/js'));
+		.pipe(gulp.dest('builds/development/js'))
+		//letting the server know when something has changeed, reload page
+		.pipe(connect.reload());
 });
 
 
@@ -63,7 +67,9 @@ gulp.task('compass', function() {
 			style: 'expanded'
 		}))
 		.on('error', gutil.log)
-		.pipe(gulp.dest('builds/development/css'));
+		.pipe(gulp.dest('builds/development/css'))
+		//letting the server know when something has changeed, reload page
+		.pipe(connect.reload());
 });
 
 gulp.task('watch', function() {
@@ -77,5 +83,13 @@ gulp.task('watch', function() {
 	gulp.watch('components/sass/*.scss', ['compass']);
 });
 
+//creating a task that starts up the server
+gulp.task('connect', function() {
+	connect.server({
+		root: 'builds/development/',
+		livereload: true
+	});
+});
+
 // if you name this default instead of all then you can just run gulp with no suffix in the terminal 
-gulp.task('default', ['coffee', 'js', 'compass', 'watch']);
+gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch']);
