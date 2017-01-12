@@ -19,6 +19,10 @@ var jsSources = [
 //only need this one sheet because this sass document imports all the other stylesheets
 var sassSources = ['components/sass/style.scss'];
 
+var htmlSources =['builds/development/*.html'];
+
+var jsonSources =['builds/development/js/*.json']
+
 //gulp task log example
 //gulp.task('log', function() {
 	//gutil.log('workflows are awesome');
@@ -81,6 +85,8 @@ gulp.task('watch', function() {
 	//have to put individual file here because our sassSources just references the single scss sheet that imports the others
 	//use a wildcard (*) to notice anything with .scss extensions
 	gulp.watch('components/sass/*.scss', ['compass']);
+	gulp.watch(htmlSources, ['html']);
+	gulp.watch(jsonSources, ['json']);
 });
 
 //creating a task that starts up the server
@@ -91,5 +97,18 @@ gulp.task('connect', function() {
 	});
 });
 
+
+//a task that watches the html files and reloades the server when changes are made
+gulp.task('html', function() {
+	gulp.src(htmlSources)
+		.pipe(connect.reload());
+});
+
+//a task that watches the json files and reloades the server when changes are made
+gulp.task('json', function() {
+	gulp.src(jsonSources)
+		.pipe(connect.reload());
+});
+
 // if you name this default instead of all then you can just run gulp with no suffix in the terminal 
-gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch']);
+gulp.task('default', ['coffee', 'html', 'json', 'js', 'compass', 'connect', 'watch']);
