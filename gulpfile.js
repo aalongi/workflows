@@ -41,8 +41,9 @@ gulp.task('coffee', function() {
 		.pipe(gulp.dest('components/scripts'));
 });
 
-// FOR BELOW: would run the compass task before the js task
+// **example** FOR BELOW: would run the compass task before the js task
 //gulp.task('js', ['compass'], function() {
+
 gulp.task('js', function() {
 	gulp.src(jsSources)
 		//What we want the concatinated file named as.. has to match what is in HTML
@@ -63,6 +64,17 @@ gulp.task('compass', function() {
 		}))
 		.on('error', gutil.log)
 		.pipe(gulp.dest('builds/development/css'));
+});
+
+gulp.task('watch', function() {
+	//specify what we want to monitor and which task to execute when something in those files change
+	gulp.watch(coffeeSources, ['coffee']);
+	//grabs updated coffee scripts and concatenates them into the script.js file that is ready by the html file
+	//now will update on the index.html file in browser
+	gulp.watch(jsSources, ['js']);
+	//have to put individual file here because our sassSources just references the single scss sheet that imports the others
+	//use a wildcard (*) to notice anything with .scss extensions
+	gulp.watch('components/sass/*.scss', ['compass']);
 });
 
 // if you name this default instead of all then you can just run gulp with no suffix in the terminal 
