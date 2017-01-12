@@ -8,6 +8,7 @@ var gulp = require('gulp'),
 	connect = require('gulp-connect'),
 	gulpif = require('gulp-if'),
 	uglify = require('gulp-uglify'),
+	minifyHTML = require('gulp-minify-html'),
 	concat = require('gulp-concat');
 
 
@@ -112,7 +113,7 @@ gulp.task('watch', function() {
 	//have to put individual file here because our sassSources just references the single scss sheet that imports the others
 	//use a wildcard (*) to notice anything with .scss extensions
 	gulp.watch('components/sass/*.scss', ['compass']);
-	gulp.watch(htmlSources, ['html']);
+	gulp.watch('builds/development/*.html', ['html']);
 	gulp.watch(jsonSources, ['json']);
 });
 
@@ -127,7 +128,9 @@ gulp.task('connect', function() {
 
 //a task that watches the html files and reloades the server when changes are made
 gulp.task('html', function() {
-	gulp.src(htmlSources)
+	gulp.src('builds/development/*.html')
+		.pipe(gulpif(env === 'production', minifyHTML()))
+		.pipe(gulpif(env === 'production', gulp.dest(outputDir)))
 		.pipe(connect.reload());
 });
 
