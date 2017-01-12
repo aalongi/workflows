@@ -6,6 +6,8 @@ var gulp = require('gulp'),
 	browserify = require('gulp-browserify'),
 	compass = require('gulp-compass'),
 	connect = require('gulp-connect'),
+	gulpif = require('gulp-if'),
+	uglify = require('gulp-uglify'),
 	concat = require('gulp-concat');
 
 
@@ -80,6 +82,7 @@ gulp.task('js', function() {
 		.pipe(concat('script.js'))
 		//adding another pipe command to send through browserify plugin
 		.pipe(browserify())
+		.pipe(gulpif(env == 'production', uglify()))
 		//where we want the concatanated file to appear.. has to match what is in HTML
 		.pipe(gulp.dest(outputDir + '/js'))
 		//letting the server know when something has changeed, reload page
