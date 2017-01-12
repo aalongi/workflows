@@ -78,4 +78,4 @@ gulp.task('watch', function() {
 });
 
 // if you name this default instead of all then you can just run gulp with no suffix in the terminal 
-gulp.task('all', ['coffee', 'js', 'compass']);
+gulp.task('default', ['coffee', 'js', 'compass', 'watch']);
