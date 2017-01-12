@@ -8,20 +8,44 @@ var gulp = require('gulp'),
 	connect = require('gulp-connect'),
 	concat = require('gulp-concat');
 
-var coffeeSources = ['components/coffee/tagline.coffee'];
+
+var env, 
+	coffeeSources,
+	jsSources,
+	sassSources,
+	htmlSources,
+	jsonSources,
+	outputDir,
+	sassStyle;
+
+//check to see if we have set up a NODE.ENV variable and push it into variable.
+//if it is not set, then use developlment
+env = process.env.NODE_ENV  || 'development';
+
+//if the enviornment variable is set to development then we'll put it in development folder
+if (env==='development') {
+	outputDir = 'builds/development/';
+	sassStyle = 'expanded';
+	//else we'll put it in the production folder
+} else {
+	outputDir = 'builds/production/';
+	sassStyle = 'compressed';
+}
+
+coffeeSources = ['components/coffee/tagline.coffee'];
 //creating a single variable from all the javascript files
-var jsSources = [
+jsSources = [
 	'components/scripts/rclick.js',
 	'components/scripts/pixgrid.js',
 	'components/scripts/tagline.js',
 	'components/scripts/template.js'
 	];
 //only need this one sheet because this sass document imports all the other stylesheets
-var sassSources = ['components/sass/style.scss'];
+sassSources = ['components/sass/style.scss'];
 
-var htmlSources =['builds/development/*.html'];
+htmlSources =[outputDir + '*.html'];
 
-var jsonSources =['builds/development/js/*.json']
+jsonSources =[outputDir + '/js/*.json'];
 
 //gulp task log example
 //gulp.task('log', function() {
@@ -57,7 +81,7 @@ gulp.task('js', function() {
 		//adding another pipe command to send through browserify plugin
 		.pipe(browserify())
 		//where we want the concatanated file to appear.. has to match what is in HTML
-		.pipe(gulp.dest('builds/development/js'))
+		.pipe(gulp.dest(outputDir + '/js'))
 		//letting the server know when something has changeed, reload page
 		.pipe(connect.reload());
 });
@@ -67,11 +91,11 @@ gulp.task('compass', function() {
 	gulp.src(sassSources)
 		.pipe(compass({
 			sass: 'components/sass',
-			images: 'builds/development/images',
-			style: 'expanded'
-		}))
-		.on('error', gutil.log)
-		.pipe(gulp.dest('builds/development/css'))
+			images: outputDir + '/images',
+			style: sassStyle
+		})
+		.on('error', gutil.log))
+		.pipe(gulp.dest(outputDir + 'css'))
 		//letting the server know when something has changeed, reload page
 		.pipe(connect.reload());
 });
@@ -92,7 +116,7 @@ gulp.task('watch', function() {
 //creating a task that starts up the server
 gulp.task('connect', function() {
 	connect.server({
-		root: 'builds/development/',
+		root: outputDir,
 		livereload: true
 	});
 });
