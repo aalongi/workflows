@@ -1,6 +1,8 @@
 # Workflow Template
 
-```devDependencies": {
+```json
+
+devDependencies": {
     
     "gulp": "^3.9.1",
     
@@ -29,4 +31,5 @@
     "mustache": "^2.3.0"
     
     }
-    ```
+
+ ```
